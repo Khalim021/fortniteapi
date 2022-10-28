@@ -1,7 +1,10 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { FaShopify } from "react-icons/fa";
+import { FortniteContext } from "../contextapi";
 
-const FortBasket = ({total = 0, handleBasketShow}) => {
+const FortBasket = () => {
+  const {orderSkin, handleBasketShow } = useContext(FortniteContext);
+  const total = orderSkin.length;
   return (
     <div className='basket-style' onClick={handleBasketShow}>
       <FaShopify />

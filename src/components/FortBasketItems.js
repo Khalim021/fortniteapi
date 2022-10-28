@@ -1,7 +1,9 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { FiXSquare } from "react-icons/fi";
+import { FortniteContext } from "../contextapi";
 
-const FortBasketItems = ({id, name, price, total, incrementTotal, decrementTotal, removeOrderFromBasket}) => {
+const FortBasketItems = ({id, name, price, total }) => {
+  const {incrementTotal, decrementTotal, removeOrderFromBasket} = useContext(FortniteContext)
 
   return (
     <div className="card-body">

@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import FortBasketItems from './FortBasketItems'
 import { FiXSquare } from "react-icons/fi";
+import {FortniteContext} from "../contextapi";
 
-const FortBasketList = ({orderSkin, handleBasketShow, incrementTotal, decrementTotal, removeOrderFromBasket}) => {
-
+const FortBasketList = () => {
+  const {orderSkin, handleBasketShow} = useContext(FortniteContext);
 
   const totalPrice = orderSkin.reduce((sumEl, el) => {
     return sumEl + el.price * el.total
@@ -14,12 +15,7 @@ const FortBasketList = ({orderSkin, handleBasketShow, incrementTotal, decrementT
       <div className="card-header">Header</div>
         {orderSkin.length ? orderSkin.map(skins => {
           return (
-           <FortBasketItems 
-           key={skins.id} {...skins} 
-           incrementTotal={incrementTotal}
-           decrementTotal={decrementTotal}
-           removeOrderFromBasket={removeOrderFromBasket}
-           />
+           <div className='basket-itemss'><FortBasketItems key={skins.id} {...skins} /></div>
           )
         }) : <div className='empty-info'>Cart is empty</div>}
         <div className='total-cost'>Total price: {totalPrice}</div>

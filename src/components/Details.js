@@ -1,7 +1,9 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { useParams} from "react-router-dom";
+import {FortniteContext} from "../contextapi";
 
-const Details = ({fortnite}) => {
+const Details = () => {
+  const {fortnite} = useContext(FortniteContext);
   const { id } = useParams();
   const fort = fortnite.find(fort => (fort.id).toString() === id)
 

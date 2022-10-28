@@ -1,87 +1,46 @@
-import React, { useState } from 'react'
+import React, { useEffect, useContext, useState } from 'react';
+import {FortniteContext} from "../contextapi"
 import FortBasket from './FortBasket';
 import FortBasketList from './FortBasketList';
 import FortniteList from './FortniteList';
 import Loading from './Loading';
+import axios from 'axios';
+import { api_key, api_url } from "../config";
+import Search from "../components/Search";
 
-const Fortnite = ({fortnite, setFortnite, loading, setLoading}) => {
-  const [orderSkin, setOrderSkin] = useState([]);
-  const [showBasket, setShowBasket] = useState(false)
+const Fortnite = () => {
+  const {fortnite, setFortnite, loading, orderSkin, showBasket} = useContext(FortniteContext);
+  const [search, setSearch] = useState('');
 
-  const addToCart = (fort) => {
-    const skinIndex = orderSkin.findIndex(fortItem => fortItem.id === fort.id);
-    if(skinIndex < 0) {
-      const newSkins = {
-          ...fort,
-          total: 1,
-      }
-      setOrderSkin([...orderSkin, newSkins]);
-  } else{
-     const newSkin = orderSkin.map((fortItem, i) => {
-      if(i === skinIndex) {
-        return {
-          ...fortItem,
-          total: fortItem.total + 1
-        }
-      } else {
-        return fort
-      }
-     });
-     setOrderSkin(newSkin);
+  const searchFilter = fortnite.filter((fort) => {
+    if(search === "") {
+      return fort
+    } else if(fort.name.toLowerCase().includes(search.toLowerCase())) {
+      return fort
     }
-  }
+  })
 
-  const handleBasketShow = () => {
-    setShowBasket(!showBasket)
-  };
-
-  const incrementTotal = (skinId) => {
-    const newSkin = orderSkin.map(element => {
-    if(element.id === skinId) {
-      const addSkin = element.total + 1
-      return{
-        ...element,
-        total: addSkin,
+  useEffect(() => {
+    axios.get(api_url, {
+      headers: {
+        Authorization: api_key
       }
-      } else {
-          return element
-      }
+    }).then(res => {
+        setFortnite(res.data?.featured)
+    }).catch(error => {
+      console.log(error)
     })
-    setOrderSkin(newSkin);
-  }
-
-  const decrementTotal = (skinId) => {
-    const newSkin = orderSkin.map(element => {
-      if(element.id === skinId) {
-        const addSkin = element.total - 1
-        return{
-          ...element,
-          total: addSkin,
-        }
-        } else {
-          return element
-        }
-    })
-    setOrderSkin(newSkin);
-  }
-
-  const removeOrderFromBasket = (skin) => {
-    const newOrder = orderSkin.filter(item => item.id !== skin);
-    setOrderSkin(newOrder)
-  }
+  }, []);
 
   return (
-    <div className="content container">
-      <FortBasket total={orderSkin.length} handleBasketShow={handleBasketShow}/>
-      {loading ? <Loading /> : <FortniteList fortnite={fortnite} addToCart={addToCart}/>}
-      {showBasket && <FortBasketList
-      orderSkin={orderSkin} 
-      handleBasketShow={handleBasketShow}
-      incrementTotal={incrementTotal}
-      decrementTotal={decrementTotal}
-      removeOrderFromBasket={removeOrderFromBasket}
-      />}
-    </div>
+    <>
+      <Search search={search} setSearch={setSearch} />
+      <div className="content container">
+        <FortBasket total={orderSkin.length}/>
+        {loading ? <Loading /> : <FortniteList searchFilter={searchFilter} />}
+        {showBasket && <FortBasketList />}
+      </div>
+    </>
   )
 }
 

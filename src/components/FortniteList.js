@@ -1,11 +1,11 @@
 import React from 'react'
 import FortniteItems from './FortniteItems'
 
-const FortniteList = ({fortnite = [], addToCart}) => {
+const FortniteList = ({searchFilter}) => {
   return (
     <div className='cards'>
-      {fortnite.map(fort => (
-        <FortniteItems key={fort.id} {...fort} addToCart={addToCart}/>
+      {searchFilter.map(fort => (
+        <FortniteItems key={fort.id} {...fort}/>
       ))}
     </div>
   )
